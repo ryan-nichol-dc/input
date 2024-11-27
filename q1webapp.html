@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Caller</title>
+    <style>
+        body {
+          font-family: 'Courier New', Courier, monospace;
+          color: greenyellow;
+        }
+        p {
+            width: 800px;
+            font-size: 20px;
+        }
+        span {
+            color: white;
+        }
+    </style>
+</head>
+
+<body style="background-color: black;">
+    <h1>Question One - The Payroll Labyrinth!</h1>
+    <br>
+    <p>
+        Welcome to DootaPay Inc., the leading global payroll processing company! Everything runs smoothly here... except when the DootaBot, our payroll processing robot, gets stuck in the office maze on payday! Your job is to rescue DootaBot and ensure the employees get paid on time. The entire office is counting on you — developers need their coffee funds, consultants their travel reimbursements, and managers their bonuses (of course).
+    </p>
+    <br>
+    <p>
+        DootaBot starts at its <span>payroll hub <b>(S)</b></span>, where it generates the magical payroll spreadsheets, and it needs to navigate the maze to the bank <span>drop off point <b>(E)</b></span>. Along the way, it must avoid <span>obstacales <b>(X)</b></span> like cubicle walls, cluttered desks, and overly chatty employees, whilst also making the shortest possible trip. If DootaBot takes too long, chaos will ensue.
+    </p>
+    <p>
+        DootaBot can move <span>right, left, up or down</span> and <span>one step</span> at a time.
+        <ol>
+            <li>S -> The starting point of the maze
+            <li>E -> The end point of the maze
+            <li>X -> An obstacle in the maze, you cannot move here
+            <li>= -> An open space in the maze, you can move here 
+        </ol>
+    </p>
+    <p>
+        Example Input:
+
+    </p>
+
+    <p style="border-color: white; border-width: 10px; color: white; width: 100px;">
+        XSXXX
+        <br>====X
+        <br>X=XXX
+        <br>X=EXX
+    </p>
+    <p>
+        <ol>
+            <li>Calculate the shortest path starting at <span>S</span> and ending at <span>E</span>
+            <li>The shortest path in the example is (3,1) => (2, 1) => (1, 1) => (0, 1) => (0,2)
+            <li>The <span>final answer</span> is the number of steps it took, <span>4</span> steps
+        </ol>
+    </p>
+
+    <br>
+
+    <a href="https://raw.githubusercontent.com/ryan-nichol-dc/input/refs/heads/main/q1input.txt" style="color: white;" target="_blank">Get your puzzle input, click here</a>
+
+    <pre>Enter your Datacom email*:</pre>
+    <input type="text" id="userEmail" placeholder="Type email here..."></input>
+
+    <pre>What are the minimum number of steps needed to reach the end? </pre>
+    <pre style="color: red; font-weight: bold;" id="failedResult"></pre>
+    <pre style="color: greenyellow; font-weight: bold;" id="result"></pre>
+    <input type="text" id="userInput" placeholder="Type answer here..."></input>
+    <button id="apiCallButton">Submit Answer.</button>
+    <pre id="apiResponse"></pre>
+    <p style="height: 500px;">
+    </p>
+
+    <script>
+            document.getElementById('apiCallButton').addEventListener('click', async () => {
+            
+                document.getElementById('failedResult').textContent = '';
+                document.getElementById('result').textContent = '';
+            
+                var userName = document.getElementById('userEmail').value;
+            if (userName === '' || userName === undefined) {
+                document.getElementById('failedResult').textContent = 'Enter your username before submitting answer.';
+                return;
+            }
+
+                var answer = document.getElementById('userInput').value;
+            const apiUrl = 'https://testapi.io/api/ryan-nichol-dc/' + answer; 
+
+            document.getElementById('result').textContent = 'Calculating Answer . . . ';
+
+            var button = document.getElementById('apiCallButton');
+            button.enabled = false;
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    document.getElementById('failedResult').textContent = 'WRONG!';
+                    document.getElementById('result').textContent = '';
+                    button.enabled = true;
+                }
+                else {
+                    // reveal question two
+                    // const data = await response.json();
+                    // document.getElementById('apiResponse').textContent = JSON.stringify(data, null, 2);
+
+                    try {
+
+                        var userName = document.getElementById('userEmail').value;
+                        var question = "one";
+
+                        var formData = new FormData();
+                        formData.append('username', userName);
+                        formData.append('question', 'one');
+                        formData.append('correct', 1);
+
+
+                        const response = await fetch('https://testapi.io/api/ryan-nichol-dc/resource/submission', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        if (!response.ok) {
+                            document.getElementById('result').textContent = 'CORRECT! But answer failed to submit, please send screenshot to Ryan Nichol.';
+                        } else {         
+                            document.getElementById('result').textContent = 'CORRECT!';
+                            button.enabled = false;
+                        }
+
+                    } catch {
+                        document.getElementById('result').textContent = 'CORRECT! But answer failed to submit, please send screenshot to Ryan Nichol.';
+                    }
+                }
+                
+            } catch (error) {
+                document.getElementById('failedResult').textContent = 'WRONG!';
+                document.getElementById('result').textContent = '';
+                button.enabled = true;
+            }
+        });
+    </script>
+</body>
+</html>
